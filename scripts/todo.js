@@ -44,6 +44,19 @@ module.exports = (robot) => {
 		}
 	});
 
+	robot.hear(/消し (.+) (.+)/i, (msg) => {
+		const day = msg.match[1].trim();
+		const title = msg.match[2].trim();
+		const animedel = todo.del_anime(day, title);
+		const username = msg.message.user.name;
+
+		if(animedel == false){
+			msg.send(`@${username}さん！\n${day} に ${title} は登録されていませんよ？`);
+		}else{
+			msg.send(`@${username}さん！\n${title} を消しました！\nユイも面白いアニメ探すの手伝います！`);
+		}
+	});
+
 	robot.hear(/視聴完了 (.+)/i, (msg) => {
 		const day = msg.match[1].trim();
 		const animedel = todo.del_anime_week(day);
@@ -94,19 +107,21 @@ module.exports = (robot) => {
 	robot.hear(/今季アニメ/i, (msg) =>{
 		const list = todo.list_anime();
 		const username = msg.message.user.name;
-
-		msg.send(`@${username}さんが今季見ているアニメはこれだけあります！\n`);
+		var anime_list_week = "";
 
 		//daylist[i]で曜日
 		for(var i = 0; i < 7; i++){
 			var list_dayanime = list[i][1];
 			var day = daylist[i];
 			if(list_dayanime.length == 0){
-				msg.send(`${day}\n`);
+				anime_list_week = `${anime_list_week}\n\n${day}`;
 			}else{
-				msg.send(`${day}\n・${list_dayanime.join("\n・")}\n`);
+				anime_list_week = `${anime_list_week}\n\n${day}\n・${list_dayanime.join("\n・")}\n`
 			}
 		}
+
+		msg.send(`@${username}さんが今季見ているアニメはこれだけあります！\n${anime_list_week}`);
+
 	});
 
 
@@ -228,9 +243,11 @@ module.exports = (robot) => {
 アニメ系\n
 [見る ○曜日 △△]:○曜日に△△を見ることを追加\n
 [見た ○曜日 △△]:○曜日の△△を見た\n
+[消し ○曜日 △△]:○曜日の△△を消し\n
 [視聴完了 ○曜日]:○曜日のアニメを全部見た\n
 [今日のアニメ]:視聴中の今日放送するアニメ一覧\n
 [昨日のアニメ]:視聴中の昨日放送したアニメ一覧\n
+[アニメ ○曜日]:視聴中の○曜日に放送するアニメ一覧\n
 [今季アニメ]:今季アニメ一覧\n\n
 金貸し系\n
 [貸し ○○ △円]:○○に△円貸したことを追加\n
