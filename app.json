@@ -1,0 +1,8 @@
+{
+  "name": "yui",
+  "description": "yui bot.",
+  "repository": "https://github.com/nizidara/hubot-yui-todo",
+  "logo": "",
+  "keywords": ["node"],
+  "image": "heroku/nodejs"
+}
